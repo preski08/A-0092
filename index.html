@@ -1,0 +1,1073 @@
+<title>Mizu</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;600&display=swap">
+<style>
+/* ── Tokens ── */
+:root {
+  --bg:        #0b0f14;
+  --bg2:       #111820;
+  --card:      #141c25;
+  --card2:     #192230;
+  --border:    #1e2d3d;
+  --border2:   #243344;
+  --fg:        #e2eaf3;
+  --fg2:       #7a9ab8;
+  --fg3:       #3d5a76;
+  --accent:    #38d9b0;
+  --accent2:   #0d6e57;
+  --accent-bg: #0a2920;
+  --danger:    #f85149;
+  --warn:      #e3a03c;
+  --green:     #3dd68c;
+  color-scheme: dark;
+}
+
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+html, body {
+  height: 100%;
+  font-family: 'Inter', system-ui, sans-serif;
+  font-size: 14px;
+  background: var(--bg);
+  color: var(--fg);
+  -webkit-font-smoothing: antialiased;
+}
+
+body {
+  padding-left: max(0px, env(safe-area-inset-left, 0px));
+  padding-right: max(0px, env(safe-area-inset-right, 0px));
+  padding-block: 0;
+}
+
+/* ═══════════════════════════════
+   SCREENS
+═══════════════════════════════ */
+.screen { display: none; min-height: 100%; flex-direction: column; }
+.screen.active { display: flex; }
+
+/* ═══════════════════════════════
+   LOGIN SCREEN
+═══════════════════════════════ */
+#screen-login {
+  align-items: center;
+  justify-content: center;
+  padding: 32px max(20px, env(safe-area-inset-left, 0px));
+  padding-bottom: max(32px, env(safe-area-inset-bottom, 0px));
+  background: var(--bg);
+}
+
+.login-box {
+  width: 100%;
+  max-width: 380px;
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+}
+
+.login-logo {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 40px;
+}
+.login-logo .orb {
+  width: 36px; height: 36px;
+  border-radius: 50%;
+  background: radial-gradient(circle at 35% 35%, #5cf5d4, var(--accent2));
+  box-shadow: 0 0 24px rgba(56,217,176,.35);
+  flex-shrink: 0;
+}
+.login-logo span {
+  font-size: 26px;
+  font-weight: 800;
+  letter-spacing: -.03em;
+  color: var(--fg);
+}
+
+.login-title {
+  font-size: 22px;
+  font-weight: 700;
+  color: var(--fg);
+  margin-bottom: 6px;
+}
+.login-sub {
+  font-size: 13px;
+  color: var(--fg2);
+  margin-bottom: 28px;
+}
+
+.field { display: flex; flex-direction: column; gap: 6px; margin-bottom: 14px; }
+.field label { font-size: 12px; font-weight: 600; color: var(--fg2); letter-spacing: .04em; text-transform: uppercase; }
+.field input {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  color: var(--fg);
+  font-size: 15px;
+  font-family: inherit;
+  padding: 13px 16px;
+  outline: none;
+  transition: border-color .2s;
+}
+.field input:focus { border-color: var(--accent2); }
+.field input::placeholder { color: var(--fg3); }
+
+.btn-primary {
+  width: 100%;
+  background: var(--accent);
+  color: #071a14;
+  border: none;
+  border-radius: 12px;
+  font-size: 15px;
+  font-weight: 700;
+  font-family: inherit;
+  padding: 14px;
+  cursor: pointer;
+  margin-top: 6px;
+  transition: opacity .15s, transform .1s;
+  letter-spacing: .01em;
+}
+.btn-primary:active { opacity: .85; transform: scale(.98); }
+.btn-primary:disabled { opacity: .4; cursor: not-allowed; transform: none; }
+
+.login-hint {
+  text-align: center;
+  font-size: 12px;
+  color: var(--fg3);
+  margin-top: 16px;
+}
+
+/* ═══════════════════════════════
+   MAIN APP SHELL
+═══════════════════════════════ */
+#screen-app {
+  flex-direction: column;
+  background: var(--bg);
+}
+
+/* ── Top bar ── */
+.topbar {
+  position: sticky;
+  top: env(safe-area-inset-top, 0px);
+  z-index: 10;
+  background: var(--bg);
+  border-bottom: 1px solid var(--border);
+  padding: 14px max(20px, env(safe-area-inset-left, 0px));
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+.topbar-logo {
+  display: flex; align-items: center; gap: 8px;
+}
+.topbar-logo .orb {
+  width: 22px; height: 22px;
+  border-radius: 50%;
+  background: radial-gradient(circle at 35% 35%, #5cf5d4, var(--accent2));
+  box-shadow: 0 0 10px rgba(56,217,176,.3);
+}
+.topbar-logo span {
+  font-size: 17px;
+  font-weight: 800;
+  letter-spacing: -.03em;
+  color: var(--fg);
+}
+.topbar .net-badge {
+  font-size: 10px;
+  font-weight: 600;
+  background: var(--accent-bg);
+  color: var(--accent);
+  border: 1px solid var(--accent2);
+  border-radius: 20px;
+  padding: 2px 8px;
+  letter-spacing: .04em;
+}
+.topbar .spacer { flex: 1; }
+.topbar .addr-chip {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 11px;
+  color: var(--accent);
+  background: var(--accent-bg);
+  border: 1px solid var(--accent2);
+  padding: 4px 10px;
+  border-radius: 20px;
+  max-width: 130px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+/* safe-area band */
+body::before {
+  content: "";
+  position: fixed;
+  inset: 0 0 auto;
+  height: env(safe-area-inset-top, 0px);
+  background: var(--bg);
+  z-index: 20;
+}
+
+/* ── Scroll area ── */
+.app-scroll {
+  flex: 1;
+  overflow-y: auto;
+  padding: 20px max(20px, env(safe-area-inset-left, 0px));
+  padding-bottom: max(100px, calc(env(safe-area-inset-bottom, 0px) + 80px));
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+/* ── Balance card ── */
+.balance-card {
+  background: linear-gradient(135deg, var(--card2) 0%, #0e1e2e 100%);
+  border: 1px solid var(--border2);
+  border-radius: 18px;
+  padding: 24px 22px 20px;
+  position: relative;
+  overflow: hidden;
+}
+.balance-card::before {
+  content: "";
+  position: absolute;
+  top: -40px; right: -40px;
+  width: 160px; height: 160px;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(56,217,176,.07) 0%, transparent 70%);
+  pointer-events: none;
+}
+.balance-label {
+  font-size: 11px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: .1em;
+  color: var(--fg2);
+  margin-bottom: 6px;
+}
+.balance-addr {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 13px;
+  color: var(--accent);
+  margin-bottom: 16px;
+  overflow-wrap: anywhere;
+}
+.balance-amount {
+  display: flex;
+  align-items: baseline;
+  gap: 6px;
+  margin-bottom: 4px;
+}
+.balance-amount .num {
+  font-size: 42px;
+  font-weight: 800;
+  letter-spacing: -.04em;
+  color: var(--fg);
+  font-variant-numeric: tabular-nums;
+  line-height: 1;
+}
+.balance-amount .unit {
+  font-size: 15px;
+  font-weight: 700;
+  color: var(--accent);
+  letter-spacing: .05em;
+}
+
+/* ── Action row ── */
+.action-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+}
+.action-btn {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  padding: 14px 10px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+  cursor: pointer;
+  transition: background .15s, border-color .15s, transform .1s;
+  font-family: inherit;
+  color: var(--fg);
+}
+.action-btn:active { transform: scale(.97); background: var(--card2); }
+.action-btn.mine { border-color: var(--accent2); }
+.action-btn.mine:hover { background: var(--accent-bg); }
+.action-btn .icon {
+  font-size: 22px;
+  line-height: 1;
+}
+.action-btn .lbl {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--fg);
+}
+.action-btn .sub {
+  font-size: 11px;
+  color: var(--fg2);
+}
+.action-btn.mine .lbl { color: var(--accent); }
+
+/* ── Section card ── */
+.section-card {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  overflow: hidden;
+}
+.section-head {
+  padding: 14px 18px 12px;
+  font-size: 12px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: .08em;
+  color: var(--fg2);
+  border-bottom: 1px solid var(--border);
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.section-body { padding: 16px 18px; display: flex; flex-direction: column; gap: 10px; }
+
+/* ── Send form ── */
+.send-input {
+  background: var(--bg2);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  color: var(--fg);
+  font-size: 14px;
+  font-family: inherit;
+  padding: 12px 14px;
+  outline: none;
+  width: 100%;
+  transition: border-color .2s;
+}
+.send-input:focus { border-color: var(--accent2); }
+.send-input::placeholder { color: var(--fg3); }
+
+.btn-send {
+  width: 100%;
+  background: var(--accent);
+  color: #071a14;
+  border: none;
+  border-radius: 10px;
+  font-size: 14px;
+  font-weight: 700;
+  font-family: inherit;
+  padding: 13px;
+  cursor: pointer;
+  transition: opacity .15s, transform .1s;
+  margin-top: 2px;
+}
+.btn-send:active { opacity: .85; transform: scale(.98); }
+.btn-send:disabled { opacity: .4; cursor: not-allowed; transform: none; }
+
+/* ── Network stats ── */
+.net-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1px;
+  background: var(--border);
+}
+.net-stat {
+  background: var(--card);
+  padding: 14px 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+}
+.net-stat .val {
+  font-size: 20px;
+  font-weight: 700;
+  color: var(--fg);
+  font-variant-numeric: tabular-nums;
+  letter-spacing: -.02em;
+}
+.net-stat .val.ok { color: var(--green); }
+.net-stat .val.accent { color: var(--accent); }
+.net-stat .key {
+  font-size: 11px;
+  color: var(--fg2);
+  font-weight: 500;
+}
+
+/* ── Tx history ── */
+.tx-list { display: flex; flex-direction: column; }
+.tx-item {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 12px 18px;
+  border-bottom: 1px solid var(--border);
+}
+.tx-item:last-child { border-bottom: none; }
+.tx-icon {
+  width: 36px; height: 36px;
+  border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 16px;
+  flex-shrink: 0;
+}
+.tx-icon.in  { background: #0a2920; }
+.tx-icon.out { background: #1c1014; }
+.tx-icon.mine-r { background: #0e1e10; }
+.tx-info { flex: 1; min-width: 0; }
+.tx-info .who {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--fg);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.tx-info .when {
+  font-size: 11px;
+  color: var(--fg3);
+  margin-top: 2px;
+}
+.tx-amount {
+  font-size: 15px;
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+  flex-shrink: 0;
+}
+.tx-amount.in   { color: var(--green); }
+.tx-amount.out  { color: var(--danger); }
+.tx-amount.mine-r { color: var(--accent); }
+
+.tx-empty {
+  padding: 24px 18px;
+  text-align: center;
+  font-size: 13px;
+  color: var(--fg3);
+}
+
+/* ── Log ── */
+.log-box {
+  background: var(--bg);
+  border-radius: 0 0 16px 16px;
+  padding: 12px 16px;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 11px;
+  line-height: 1.8;
+  color: var(--fg3);
+  max-height: 140px;
+  overflow-y: auto;
+}
+.log-box .log-line.ok { color: var(--accent); }
+.log-box .log-line.err { color: var(--danger); }
+.log-box .log-line.info { color: var(--fg2); }
+
+/* ── Toast ── */
+#toast {
+  position: fixed;
+  bottom: max(90px, calc(env(safe-area-inset-bottom, 0px) + 70px));
+  left: 50%;
+  transform: translateX(-50%) translateY(20px);
+  background: var(--card2);
+  border: 1px solid var(--border2);
+  border-radius: 12px;
+  padding: 10px 20px;
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--fg);
+  z-index: 100;
+  opacity: 0;
+  transition: opacity .2s, transform .2s;
+  white-space: nowrap;
+  pointer-events: none;
+  max-width: 90vw;
+  text-align: center;
+}
+#toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
+#toast.ok  { border-color: var(--accent2); color: var(--accent); }
+#toast.err { border-color: var(--danger); color: var(--danger); }
+
+/* ── Bottom nav ── */
+.bottom-nav {
+  position: fixed;
+  bottom: 0; left: 0; right: 0;
+  padding-bottom: env(safe-area-inset-bottom, 0px);
+  background: var(--bg2);
+  border-top: 1px solid var(--border);
+  display: flex;
+  z-index: 10;
+}
+.nav-btn {
+  flex: 1;
+  display: flex; flex-direction: column;
+  align-items: center; gap: 4px;
+  padding: 10px 4px 8px;
+  background: none;
+  border: none;
+  color: var(--fg3);
+  font-family: inherit;
+  font-size: 10px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: .05em;
+  cursor: pointer;
+  transition: color .15s;
+}
+.nav-btn .ni { font-size: 20px; }
+.nav-btn.active { color: var(--accent); }
+
+/* ── Settings ── */
+.setting-row {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 14px 0;
+  border-bottom: 1px solid var(--border);
+}
+.setting-row:last-child { border-bottom: none; }
+.setting-row .sr-label { flex: 1; font-size: 14px; color: var(--fg); }
+.setting-row .sr-val {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 12px;
+  color: var(--fg2);
+  max-width: 180px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  text-align: right;
+  word-break: break-all;
+}
+.btn-sm {
+  background: var(--card2);
+  border: 1px solid var(--border2);
+  border-radius: 8px;
+  color: var(--fg2);
+  font-size: 12px;
+  font-family: inherit;
+  padding: 6px 14px;
+  cursor: pointer;
+  white-space: nowrap;
+  transition: color .15s, border-color .15s;
+}
+.btn-sm:hover { color: var(--accent); border-color: var(--accent2); }
+.btn-logout {
+  width: 100%;
+  background: transparent;
+  border: 1px solid #2a1515;
+  border-radius: 10px;
+  color: var(--danger);
+  font-size: 14px;
+  font-weight: 600;
+  font-family: inherit;
+  padding: 13px;
+  cursor: pointer;
+  margin-top: 8px;
+  transition: background .15s;
+}
+.btn-logout:hover { background: #1a0a0a; }
+
+/* ── Mining spinner ── */
+@keyframes spin { to { transform: rotate(360deg); } }
+.mining-spinner {
+  display: inline-block;
+  width: 16px; height: 16px;
+  border: 2px solid var(--accent2);
+  border-top-color: var(--accent);
+  border-radius: 50%;
+  animation: spin .7s linear infinite;
+  vertical-align: middle;
+  margin-right: 6px;
+}
+
+/* ── Config input ── */
+.api-url-input {
+  background: var(--bg2);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  color: var(--accent);
+  font-size: 12px;
+  font-family: 'JetBrains Mono', monospace;
+  padding: 8px 12px;
+  width: 100%;
+  outline: none;
+}
+.api-url-input:focus { border-color: var(--accent2); }
+
+/* responsive */
+@media (max-width: 360px) {
+  .balance-amount .num { font-size: 34px; }
+  .action-btn { padding: 12px 6px; }
+}
+</style>
+
+<!-- ════════════ LOGIN ════════════ -->
+<div id="screen-login" class="screen active">
+  <div class="login-box">
+    <div class="login-logo">
+      <div class="orb"></div>
+      <span>Mizu</span>
+    </div>
+    <div class="login-title">Selamat datang</div>
+    <div class="login-sub">Login atau daftar otomatis dengan username baru</div>
+
+    <div class="field">
+      <label>Username / Address</label>
+      <input id="inp-user" type="text" placeholder="contoh: Alice" autocomplete="off" autocapitalize="none">
+    </div>
+    <div class="field">
+      <label>Password</label>
+      <input id="inp-pass" type="password" placeholder="••••••">
+    </div>
+
+    <button class="btn-primary" id="btn-login">Masuk</button>
+    <p class="login-hint">Username baru? Akan otomatis terdaftar. Ganti server di ⚙ Pengaturan.</p>
+  </div>
+</div>
+
+<!-- ════════════ APP ════════════ -->
+<div id="screen-app" class="screen">
+
+  <!-- Topbar -->
+  <div class="topbar">
+    <div class="topbar-logo">
+      <div class="orb"></div>
+      <span>Mizu</span>
+    </div>
+    <span class="net-badge" id="tb-net">Cloud API</span>
+    <div class="spacer"></div>
+    <span class="addr-chip" id="tb-addr">—</span>
+  </div>
+
+  <!-- Scroll content -->
+  <div class="app-scroll" id="tab-home">
+
+    <!-- Balance -->
+    <div class="balance-card">
+      <div class="balance-label">Alamat Saya</div>
+      <div class="balance-addr" id="disp-addr">—</div>
+      <div class="balance-amount">
+        <span class="num" id="disp-bal">0</span>
+        <span class="unit">MIZU</span>
+      </div>
+    </div>
+
+    <!-- Actions -->
+    <div class="action-row">
+      <button class="action-btn mine" id="btn-mine">
+        <span class="icon">⛏</span>
+        <span class="lbl" id="mine-lbl">Mine Block</span>
+        <span class="sub">+50 MIZU</span>
+      </button>
+      <button class="action-btn" id="btn-sync">
+        <span class="icon">🔄</span>
+        <span class="lbl">Sync Chain</span>
+        <span class="sub" id="sync-sub">Refresh data</span>
+      </button>
+    </div>
+
+    <!-- Send -->
+    <div class="section-card">
+      <div class="section-head">⬆ Kirim Transaksi</div>
+      <div class="section-body">
+        <input class="send-input" id="inp-to" type="text" placeholder="Alamat tujuan (contoh: Bob)" autocapitalize="none">
+        <input class="send-input" id="inp-amount" type="number" placeholder="Jumlah MIZU" min="1">
+        <button class="btn-send" id="btn-send">Kirim</button>
+      </div>
+    </div>
+
+    <!-- Network -->
+    <div class="section-card">
+      <div class="section-head">📡 Jaringan</div>
+      <div class="net-grid">
+        <div class="net-stat">
+          <div class="val accent" id="net-len">—</div>
+          <div class="key">Chain Length</div>
+        </div>
+        <div class="net-stat">
+          <div class="val" id="net-pending">—</div>
+          <div class="key">Pending Tx</div>
+        </div>
+        <div class="net-stat">
+          <div class="val" id="net-diff">—</div>
+          <div class="key">Difficulty</div>
+        </div>
+        <div class="net-stat">
+          <div class="val ok" id="net-valid">—</div>
+          <div class="key">Valid</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- History -->
+    <div class="section-card">
+      <div class="section-head">📋 Riwayat Transaksi</div>
+      <div class="tx-list" id="tx-list">
+        <div class="tx-empty">Belum ada transaksi</div>
+      </div>
+    </div>
+
+    <!-- Log -->
+    <div class="section-card">
+      <div class="section-head">🖥 Log</div>
+      <div class="log-box" id="log-box"></div>
+    </div>
+
+  </div><!-- /app-scroll -->
+
+  <!-- Tab: Settings -->
+  <div class="app-scroll" id="tab-settings" style="display:none">
+    <div class="section-card">
+      <div class="section-head">⚙ Pengaturan</div>
+      <div class="section-body" style="gap:0">
+        <div class="setting-row">
+          <span class="sr-label">Address</span>
+          <span class="sr-val" id="set-addr">—</span>
+        </div>
+        <div class="setting-row">
+          <span class="sr-label">API URL</span>
+          <span class="sr-val" id="set-url">—</span>
+        </div>
+        <div class="setting-row">
+          <span class="sr-label">Token</span>
+          <span class="sr-val" id="set-token">—</span>
+        </div>
+        <div class="setting-row" style="flex-direction:column; align-items:stretch; gap:8px">
+          <span class="sr-label">Ganti API URL</span>
+          <input class="api-url-input" id="inp-new-url" placeholder="https://...">
+          <button class="btn-sm" id="btn-save-url" style="align-self:flex-end">Simpan</button>
+        </div>
+      </div>
+    </div>
+    <button class="btn-logout" id="btn-logout">Keluar</button>
+  </div>
+
+  <!-- Bottom nav -->
+  <nav class="bottom-nav">
+    <button class="nav-btn active" data-tab="home">
+      <span class="ni">🏠</span>
+      <span>Beranda</span>
+    </button>
+    <button class="nav-btn" data-tab="settings">
+      <span class="ni">⚙</span>
+      <span>Pengaturan</span>
+    </button>
+  </nav>
+</div>
+
+<!-- Toast -->
+<div id="toast"></div>
+
+<script>
+/* ══════════════════════════════════════
+   State
+══════════════════════════════════════ */
+let API = '';
+let token = '';
+let address = '';
+let isMining = false;
+
+const $ = id => document.getElementById(id);
+
+/* ══════════════════════════════════════
+   Persist
+══════════════════════════════════════ */
+function save() {
+  try {
+    localStorage.setItem('mizu_session', JSON.stringify({ API, token, address }));
+  } catch(e) {}
+}
+function load() {
+  try {
+    const d = JSON.parse(localStorage.getItem('mizu_session') || 'null');
+    if (d && d.token) { API = d.API || DEFAULT_API; token = d.token; address = d.address; return true; }
+  } catch(e) {}
+  return false;
+}
+
+/* ══════════════════════════════════════
+   Toast
+══════════════════════════════════════ */
+let toastTm;
+function toast(msg, type = '') {
+  const t = $('toast');
+  t.textContent = msg;
+  t.className = 'show ' + type;
+  clearTimeout(toastTm);
+  toastTm = setTimeout(() => { t.className = ''; }, 2800);
+}
+
+/* ══════════════════════════════════════
+   Log
+══════════════════════════════════════ */
+function addLog(msg, cls = 'info') {
+  const box = $('log-box');
+  const now = new Date();
+  const ts = `[${String(now.getHours()).padStart(2,'0')}:${String(now.getMinutes()).padStart(2,'0')}.${String(now.getSeconds()).padStart(2,'0')}]`;
+  const line = document.createElement('div');
+  line.className = 'log-line ' + cls;
+  line.textContent = ts + ' ' + msg;
+  box.appendChild(line);
+  box.scrollTop = box.scrollHeight;
+}
+
+/* ══════════════════════════════════════
+   API helpers
+══════════════════════════════════════ */
+async function api(method, path, body, auth = false) {
+  const headers = { 'Content-Type': 'application/json' };
+  if (auth) headers['Authorization'] = 'Bearer ' + token;
+  const r = await fetch(API + path, {
+    method,
+    headers,
+    body: body ? JSON.stringify(body) : undefined
+  });
+  const json = await r.json();
+  if (!r.ok) throw new Error(json.error || 'Error ' + r.status);
+  return json;
+}
+
+/* ══════════════════════════════════════
+   Screens
+══════════════════════════════════════ */
+function showScreen(id) {
+  document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+  $(id).classList.add('active');
+}
+
+/* ══════════════════════════════════════
+   Login
+══════════════════════════════════════ */
+// Default API URL — ganti di Settings jika deploy ke server sendiri
+const DEFAULT_API = 'https://mizu-chain-api-production.up.railway.app';
+
+$('btn-login').addEventListener('click', async () => {
+  const user = $('inp-user').value.trim();
+  const pass = $('inp-pass').value;
+  if (!user || !pass) return toast('Username dan password wajib diisi', 'err');
+  // Pakai URL tersimpan atau default
+  if (!API) API = DEFAULT_API;
+  const btn = $('btn-login');
+  btn.disabled = true;
+  btn.textContent = 'Menghubungkan…';
+  try {
+    const d = await api('POST', '/api/login', { username: user, password: pass });
+    token = d.token;
+    address = d.address;
+    save();
+    enterApp();
+  } catch(e) {
+    toast('Login gagal: ' + e.message, 'err');
+  } finally {
+    btn.disabled = false;
+    btn.textContent = 'Masuk';
+  }
+});
+
+['inp-user','inp-pass'].forEach(id => {
+  $(id).addEventListener('keydown', e => { if (e.key === 'Enter') $('btn-login').click(); });
+});
+
+/* ══════════════════════════════════════
+   Enter app
+══════════════════════════════════════ */
+function enterApp() {
+  showScreen('screen-app');
+  $('tb-addr').textContent = address;
+  $('disp-addr').textContent = address;
+  $('set-addr').textContent = address;
+  $('set-url').textContent = API;
+  $('set-token').textContent = token.slice(0,8) + '…';
+  $('inp-new-url').value = API;
+  addLog('Login sebagai ' + address, 'ok');
+  refreshAll();
+}
+
+/* ══════════════════════════════════════
+   Refresh
+══════════════════════════════════════ */
+async function refreshAll() {
+  try {
+    const [status, history, balData] = await Promise.all([
+      api('GET', '/api/status'),
+      api('GET', '/api/history/' + address),
+      api('GET', '/api/balance/' + address)
+    ]);
+    // Balance
+    $('disp-bal').textContent = balData.balance;
+    // Network
+    $('net-len').textContent = status.chainLength;
+    $('net-pending').textContent = status.pendingTx;
+    $('net-diff').textContent = status.difficulty;
+    $('net-valid').textContent = status.valid ? '✓ Valid' : '✗ Invalid';
+    $('net-valid').className = 'val ' + (status.valid ? 'ok' : '');
+    $('sync-sub').textContent = 'Block #' + status.chainLength;
+    // History
+    renderHistory(history.history || []);
+  } catch(e) {
+    addLog('Gagal refresh: ' + e.message, 'err');
+  }
+}
+
+function renderHistory(list) {
+  const el = $('tx-list');
+  if (!list.length) {
+    el.innerHTML = '<div class="tx-empty">Belum ada transaksi</div>';
+    return;
+  }
+  el.innerHTML = list.slice(0, 30).map(tx => {
+    const isIn = tx.toAddress === address;
+    const isMineReward = tx.fromAddress === null && tx.toAddress === address;
+    let cls = isMineReward ? 'mine-r' : (isIn ? 'in' : 'out');
+    let icon = isMineReward ? '⛏' : (isIn ? '⬇' : '⬆');
+    let who = isMineReward
+      ? 'Mining Reward'
+      : (isIn ? ('Dari: ' + tx.fromAddress) : ('Ke: ' + tx.toAddress));
+    let sign = (isIn || isMineReward) ? '+' : '-';
+    let when = new Date(tx.timestamp).toLocaleTimeString('id-ID', {hour:'2-digit', minute:'2-digit'});
+    return `<div class="tx-item">
+      <div class="tx-icon ${cls}">${icon}</div>
+      <div class="tx-info">
+        <div class="who">${who}</div>
+        <div class="when">Block #${tx.blockIndex} · ${when}</div>
+      </div>
+      <div class="tx-amount ${cls}">${sign}${tx.amount}</div>
+    </div>`;
+  }).join('');
+}
+
+/* ══════════════════════════════════════
+   Mine
+══════════════════════════════════════ */
+$('btn-mine').addEventListener('click', async () => {
+  if (isMining) return;
+  isMining = true;
+  const lbl = $('mine-lbl');
+  lbl.innerHTML = '<span class="mining-spinner"></span>Mining…';
+  $('btn-mine').disabled = true;
+  addLog('Mulai mining…', 'info');
+  try {
+    const d = await api('POST', '/api/mine', null, true);
+    addLog('Block #' + d.block.index + ' berhasil! Hash: ' + d.block.hash.slice(0,12) + '…', 'ok');
+    toast('⛏ ' + d.message, 'ok');
+    refreshAll();
+  } catch(e) {
+    addLog('Mining gagal: ' + e.message, 'err');
+    toast('Mining gagal: ' + e.message, 'err');
+  } finally {
+    isMining = false;
+    lbl.textContent = 'Mine Block';
+    $('btn-mine').disabled = false;
+  }
+});
+
+/* ══════════════════════════════════════
+   Sync
+══════════════════════════════════════ */
+$('btn-sync').addEventListener('click', async () => {
+  addLog('Sync chain…', 'info');
+  await refreshAll();
+  toast('Chain tersinkron', 'ok');
+});
+
+/* ══════════════════════════════════════
+   Send
+══════════════════════════════════════ */
+$('btn-send').addEventListener('click', async () => {
+  const to = $('inp-to').value.trim();
+  const amount = Number($('inp-amount').value);
+  if (!to) return toast('Isi alamat tujuan', 'err');
+  if (!amount || amount <= 0) return toast('Jumlah harus lebih dari 0', 'err');
+  $('btn-send').disabled = true;
+  $('btn-send').textContent = 'Mengirim…';
+  try {
+    await api('POST', '/api/tx', { to, amount }, true);
+    addLog('Tx ke ' + to + ' sejumlah ' + amount + ' MIZU dikirim', 'ok');
+    toast('✓ Transaksi terkirim! Mine untuk konfirmasi.', 'ok');
+    $('inp-to').value = '';
+    $('inp-amount').value = '';
+    refreshAll();
+  } catch(e) {
+    addLog('Tx gagal: ' + e.message, 'err');
+    toast('Gagal: ' + e.message, 'err');
+  } finally {
+    $('btn-send').disabled = false;
+    $('btn-send').textContent = 'Kirim';
+  }
+});
+
+/* ══════════════════════════════════════
+   Bottom nav
+══════════════════════════════════════ */
+document.querySelectorAll('.nav-btn').forEach(btn => {
+  btn.addEventListener('click', () => {
+    document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    const tab = btn.dataset.tab;
+    $('tab-home').style.display = tab === 'home' ? 'flex' : 'none';
+    $('tab-settings').style.display = tab === 'settings' ? 'flex' : 'none';
+  });
+});
+
+/* ══════════════════════════════════════
+   Settings
+══════════════════════════════════════ */
+$('btn-save-url').addEventListener('click', () => {
+  const u = $('inp-new-url').value.trim().replace(/\/$/, '');
+  if (!u) return toast('URL tidak boleh kosong', 'err');
+  API = u;
+  $('set-url').textContent = API;
+  save();
+  toast('URL disimpan', 'ok');
+  refreshAll();
+});
+
+$('btn-logout').addEventListener('click', () => {
+  try { localStorage.removeItem('mizu_session'); } catch(e) {}
+  token = ''; address = ''; API = '';
+  showScreen('screen-login');
+  $('log-box').innerHTML = '';
+  $('tx-list').innerHTML = '<div class="tx-empty">Belum ada transaksi</div>';
+});
+
+/* ══════════════════════════════════════
+   WebSocket
+══════════════════════════════════════ */
+function connectWS() {
+  if (!API || !token) return;
+  try {
+    const wsUrl = API.replace(/^https?:\/\//, m => m === 'https://' ? 'wss://' : 'ws://') + '/ws';
+    const ws = new WebSocket(wsUrl);
+    ws.onopen = () => {
+      ws.send(JSON.stringify({ type: 'auth', token }));
+      addLog('WebSocket terhubung', 'ok');
+    };
+    ws.onmessage = e => {
+      try {
+        const msg = JSON.parse(e.data);
+        if (msg.type === 'new_block') {
+          addLog('Block baru #' + msg.block.index + ' oleh ' + msg.miner, 'ok');
+          refreshAll();
+        }
+        if (msg.type === 'new_tx') {
+          const tx = msg.tx;
+          if (tx.toAddress === address) {
+            addLog('Transaksi masuk dari ' + tx.fromAddress + ' : +' + tx.amount + ' MIZU', 'ok');
+            toast('⬇ Transaksi masuk +' + tx.amount + ' MIZU', 'ok');
+            refreshAll();
+          }
+        }
+      } catch(err) {}
+    };
+    ws.onclose = () => {
+      addLog('WebSocket terputus, reconnect 5s…', 'err');
+      setTimeout(connectWS, 5000);
+    };
+  } catch(e) {}
+}
+
+/* ══════════════════════════════════════
+   Boot
+══════════════════════════════════════ */
+if (load()) {
+  enterApp();
+  setTimeout(connectWS, 800);
+}
+</script>
